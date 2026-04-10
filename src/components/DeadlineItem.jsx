@@ -32,12 +32,27 @@ const DeadlineItem = ({ deadline, onEdit, onDelete }) => {
   return (
     <div className={`deadline-item glass ${imminent ? 'imminent' : ''}`}>
       <div className="item-header">
-        <h4 className="item-title">{deadline.title}</h4>
+        <div className="title-wrapper">
+          {deadline.id && deadline.id.startsWith('http') ? (
+            <a 
+              href={deadline.id} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="item-title link"
+              title="Click to open in Courseweb"
+            >
+              {deadline.title}
+            </a>
+          ) : (
+            <h4 className="item-title">{deadline.title}</h4>
+          )}
+        </div>
+        
         <div className="item-actions">
-          <button onClick={() => setIsEditing(true)} className="action-btn edit-btn" aria-label="Edit">
+          <button onClick={(e) => { e.stopPropagation(); setIsEditing(true); }} className="action-btn edit-btn" aria-label="Edit">
             <Pencil size={14} />
           </button>
-          <button onClick={() => onDelete(deadline.id)} className="action-btn delete-btn" aria-label="Delete">
+          <button onClick={(e) => { e.stopPropagation(); onDelete(deadline.id); }} className="action-btn delete-btn" aria-label="Delete">
             <Trash2 size={14} />
           </button>
         </div>
@@ -94,6 +109,23 @@ const DeadlineItem = ({ deadline, onEdit, onDelete }) => {
           line-height: 1.4;
           word-break: break-word;
           padding-right: 1rem;
+          margin: 0;
+          text-decoration: none;
+        }
+        .item-title.link {
+          color: var(--accent-primary);
+          transition: color 0.2s, opacity 0.2s;
+          display: inline-block;
+          border-bottom: 1px dashed rgba(59, 130, 246, 0.4);
+        }
+        .item-title.link:hover {
+          color: var(--accent-hover);
+          opacity: 0.8;
+          border-bottom-style: solid;
+          text-decoration: none;
+        }
+        .title-wrapper {
+          flex: 1;
         }
         .item-actions {
           display: flex;

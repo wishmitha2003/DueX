@@ -35,6 +35,14 @@ async function handleScrapedDeadlines(scrapedDeadlines) {
       const existingIdx = existingDeadlines.findIndex(d => d.title === event.title);
       
       if (existingIdx >= 0) {
+        const oldIsExact = existingDeadlines[existingIdx].isExactTime !== false;
+        const newIsExact = event.isExactTime !== false;
+        
+        // If we already have exact time, but new one is approximate (from calendar), skip
+        if (oldIsExact && !newIsExact) {
+            continue;
+        }
+
         if (existingDeadlines[existingIdx].date !== event.date) {
            existingDeadlines[existingIdx] = { ...existingDeadlines[existingIdx], ...event };
            updated = true;

@@ -45,13 +45,8 @@ const CountdownTimer = ({ targetDate }) => {
       </div>
       <span className="separator">:</span>
       <div className="time-block">
-        <span className="time-val">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+        <span className="time-val accent">{timeLeft.minutes.toString().padStart(2, '0')}</span>
         <span className="time-label">Min</span>
-      </div>
-      <span className="separator">:</span>
-      <div className="time-block">
-        <span className="time-val accent">{timeLeft.seconds.toString().padStart(2, '0')}</span>
-        <span className="time-label">Sec</span>
       </div>
 
       <style>{`
