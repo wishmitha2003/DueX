@@ -110,18 +110,30 @@ function extractDeadlines() {
   // Strategy 1: Upcoming Events Block
   const upcomingEvents = document.querySelectorAll('.block_calendar_upcoming .event');
   upcomingEvents.forEach(evt => {
-    // Try to find a link that goes directly to the assignment mod
-    let link = evt.querySelector('a[href*="mod/assign"]');
+    // Try to find a link that goes directly to the assignment mod or quiz
+    let link = evt.querySelector('a[href*="mod/"]');
+    if (!link) link = evt.querySelector('a[href*="course/view"]');
     if (!link) link = evt.querySelector('a'); // Fallback to event link
 
     const dateEl = evt.querySelector('.date');
+    
+    // Module code usually found in a parent course link or nearby
+    const courseEl = evt.querySelector('.course a') || evt.closest('.event').querySelector('.course a');
+    let moduleCode = '';
+    if (courseEl) {
+        const courseText = courseEl.innerText.trim();
+        const mMatch = courseText.match(/([a-zA-Z]{2,}\s*\d{3,4})/i);
+        if (mMatch) moduleCode = mMatch[1].replace(/\s/g, '').toUpperCase();
+    }
+
     if (link && dateEl) {
-      const title = link.innerText.trim();
+      const title = evt.querySelector('a').innerText.trim(); // Get title from the primary link to avoid button text
       const parsedDate = parseMoodleDate(dateEl.innerText);
       if (parsedDate && isValidEvent(title)) {
         deadlines.push({
           id: link.href || 'evt_' + Math.random().toString(36).substr(2),
           title: title,
+          module: moduleCode,
           date: getLocalTimeStr(parsedDate), 
           createdAt: now.toISOString(),
           isExactTime: true
@@ -135,17 +147,31 @@ function extractDeadlines() {
   timelineItems.forEach(item => {
     const titleEl = item.querySelector('.text-truncate, .event-name');
     const dateEl = item.querySelector('.text-muted, .text-right');
-    // Prioritize direct assignment link
-    let linkEl = item.querySelector('a[href*="mod/assign"]');
-    if (!linkEl) linkEl = item.querySelector('a'); // Fallback
+    
+    // Aggressively prioritize ANY activity link (assign, quiz, forum) over calendar loops
+    let linkEl = item.querySelector('a.btn[href*="mod/"], a[href*="mod/"]');
+    if (!linkEl) linkEl = item.querySelector('a[href*="course/view"]'); 
+    if (!linkEl) linkEl = item.querySelector('a');
+
+    // Attempt to extract module code from course name
+    const courseEl = item.querySelector('.text-truncate a[href*="course/view"], a[href*="course/view"].text-truncate');
+    let moduleCode = '';
+    if (courseEl) {
+        const courseText = courseEl.innerText.trim();
+        const mMatch = courseText.match(/([a-zA-Z]{2,}\s*\d{3,4})/i);
+        if (mMatch) moduleCode = mMatch[1].replace(/\s/g, '').toUpperCase();
+    }
 
     if (titleEl && dateEl) {
-      const title = titleEl.innerText.trim();
+      let title = titleEl.innerText.trim();
+      
+      // Sometimes button text gets included or title is wrapped strangely, but titleEl handles it mostly
       const parsedDate = parseMoodleDate(dateEl.innerText);
       if (parsedDate && isValidEvent(title)) {
         deadlines.push({
           id: (linkEl ? linkEl.href : '') || 'evt_' + Math.random().toString(36).substr(2),
           title: title,
+          module: moduleCode,
           date: getLocalTimeStr(parsedDate),
           createdAt: now.toISOString(),
           isExactTime: true
