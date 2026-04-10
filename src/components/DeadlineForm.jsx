@@ -21,145 +21,110 @@ const DeadlineForm = ({ onSubmit, onCancel, initialData = null }) => {
   };
 
   return (
-    <form className="glass custom-form" onSubmit={handleSubmit}>
+    <form className="deadline-form-card glass" onSubmit={handleSubmit}>
       <div className="form-header">
-        <h3>{initialData ? 'Edit Deadline' : 'New Deadline'}</h3>
+        <div className="icon-badge secondary">
+          {initialData ? <Plus size={18} style={{ transform: 'rotate(45deg)' }} /> : <Plus size={18} />}
+        </div>
+        <div className="header-text">
+          <h3>{initialData ? 'Edit Milestone' : 'New Milestone'}</h3>
+          <p>{initialData ? 'Update existing deadline' : 'Create a new manual entry'}</p>
+        </div>
         <button type="button" onClick={onCancel} className="close-btn" aria-label="Cancel">
-          <X size={16} />
+          <X size={18} />
         </button>
       </div>
 
-      <div className="form-group">
-        <label htmlFor="title">Title</label>
-        <input
-          id="title"
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="e.g. History Essay"
-          autoFocus
-          required
-        />
-      </div>
-
-      <div className="form-row">
-        <div className="form-group flex-1">
-          <label htmlFor="date">
-            <CalendarIcon size={14} className="label-icon"/> Date
-          </label>
+      <div className="form-body">
+        <div className="form-group">
+          <label htmlFor="title">Task Title</label>
           <input
-            id="date"
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-            min={new Date().toISOString().split('T')[0]}
-          />
-        </div>
-        
-        <div className="form-group flex-1">
-          <label htmlFor="time">
-            <Clock size={14} className="label-icon"/> Time
-          </label>
-          <input
-            id="time"
-            type="time"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
+            id="title"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="e.g. Software Engineering Assignment"
+            className="styled-input"
+            autoFocus
             required
           />
         </div>
-      </div>
 
-      <button type="submit" className="submit-btn">
-        {initialData ? 'Save Changes' : 'Add Deadline'}
-      </button>
+        <div className="form-row">
+          <div className="form-group flex-1">
+            <label htmlFor="date">
+              <CalendarIcon size={14} /> Due Date
+            </label>
+            <input
+              id="date"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="styled-input"
+              required
+              min={new Date().toISOString().split('T')[0]}
+            />
+          </div>
+          
+          <div className="form-group flex-1">
+            <label htmlFor="time">
+              <Clock size={14} /> Time
+            </label>
+            <input
+              id="time"
+              type="time"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              className="styled-input"
+              required
+            />
+          </div>
+        </div>
+
+        <button type="submit" className="submit-btn secondary">
+          {initialData ? 'Update Deadline' : 'Register Deadline'}
+        </button>
+      </div>
 
       <style>{`
-        .custom-form {
-          padding: 1.25rem;
+        .deadline-form-card {
           border-radius: var(--radius-lg);
-          margin-bottom: 0.5rem;
+          overflow: hidden;
+          margin-bottom: 1rem;
+          background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
         }
-        .form-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 1.25rem;
+        .icon-badge.secondary {
+          background: linear-gradient(135deg, var(--accent-secondary), #d946ef);
+          box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
         }
-        .form-header h3 {
-          font-size: 1rem;
-          font-weight: 600;
-          color: var(--text-primary);
+        .form-body {
+          padding: 1.25rem;
         }
         .close-btn {
-          color: var(--text-secondary);
-        }
-        .close-btn:hover {
-          color: var(--danger);
-        }
-        .form-group {
-          margin-bottom: 1rem;
-          display: flex;
-          flex-direction: column;
-          gap: 0.375rem;
-        }
-        .form-row {
-          display: flex;
-          gap: 0.75rem;
-        }
-        .flex-1 {
-          flex: 1;
-        }
-        label {
-          font-size: 0.75rem;
-          font-weight: 500;
-          color: var(--text-secondary);
+          width: 30px;
+          height: 30px;
+          border-radius: 8px;
           display: flex;
           align-items: center;
-          gap: 0.375rem;
+          justify-content: center;
+          color: var(--text-muted);
+          transition: all 0.2s;
         }
-        .label-icon {
-          opacity: 0.7;
+        .close-btn:hover {
+          background: rgba(239, 68, 68, 0.1);
+          color: var(--danger);
         }
-        input {
-          background: rgba(15, 23, 42, 0.6);
-          border: 1px solid var(--border-color);
-          color: var(--text-primary);
-          padding: 0.625rem;
-          border-radius: var(--radius-md);
-          font-size: 0.875rem;
-          outline: none;
-          transition: border-color 0.2s;
+        .submit-btn.secondary {
+           background: linear-gradient(to right, var(--accent-secondary), #7c3aed);
+           box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
         }
-        input:focus {
-          border-color: var(--accent-primary);
-          box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-        }
-        input::placeholder {
-          color: var(--text-secondary);
-          opacity: 0.5;
+        .submit-btn.secondary:hover {
+           box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
         }
         ::-webkit-calendar-picker-indicator {
           filter: invert(1);
-          opacity: 0.6;
+          opacity: 0.5;
           cursor: pointer;
-        }
-        ::-webkit-calendar-picker-indicator:hover {
-          opacity: 1;
-        }
-        .submit-btn {
-          width: 100%;
-          background: var(--accent-primary);
-          color: white;
-          padding: 0.75rem;
-          border-radius: var(--radius-md);
-          font-weight: 600;
-          font-size: 0.875rem;
-          margin-top: 0.5rem;
-        }
-        .submit-btn:hover {
-          background: var(--accent-hover);
         }
       `}</style>
     </form>

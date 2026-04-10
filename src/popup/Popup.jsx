@@ -22,14 +22,13 @@ const Popup = () => {
           <CalendarClock className="header-icon" size={24} />
           <h1>DueX</h1>
         </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div className="header-actions">
           <button 
             className="icon-btn" 
             onClick={() => setShowSettings(!showSettings)}
             aria-label={showSettings ? "Close settings" : "Open settings"}
-            style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px' }}
           >
-            <Settings size={20} />
+            <Settings size={18} />
           </button>
           <button 
             className="add-btn" 
